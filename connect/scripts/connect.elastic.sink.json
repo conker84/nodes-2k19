@@ -1,0 +1,24 @@
+{
+  "name": "elastic-sink",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false,
+    "topics": "movie,person",
+    "connection.url": "http://elasticsearch:9200",
+    "type.name": "entity",
+    "transforms":"valueToKey,extractKey,drop,flatten,rename",
+    "transforms.valueToKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.valueToKey.fields": "id",
+    "transforms.extractKey.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractKey.field": "id",
+    "transforms.drop.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.drop.blacklist": "id,labels,type",
+    "transforms.flatten.type": "org.apache.kafka.connect.transforms.Flatten$Value",
+    "transforms.flatten.delimiter":".",
+    "transforms.rename.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.rename.renames": "properties.tagline:tagline,properties.title:title,properties.released:released,properties.name:name,properties.born:born",
+    "schema.ignore": "true"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "elastic-sink-rank",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false,
+    "topics": "rank",
+    "connection.url": "http://elasticsearch:9200",
+    "type.name": "entity",
+    "transforms":"extractPayload,valueToKey,extractKey,extractTopic,drop,flatten,rename",
+    "transforms.extractPayload.type": "org.apache.kafka.connect.transforms.ExtractField$Value",
+    "transforms.extractPayload.field": "payload",
+    "transforms.valueToKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.valueToKey.fields": "id",
+    "transforms.extractKey.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractKey.field": "id",
+    "transforms.extractTopic.type": "io.confluent.connect.transforms.ExtractTopic$Value",
+    "transforms.extractTopic.field": "entity",
+    "transforms.drop.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.drop.blacklist": "id,labels,type,entity",
+    "transforms.flatten.type": "org.apache.kafka.connect.transforms.Flatten$Value",
+    "transforms.flatten.delimiter":".",
+    "transforms.rename.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.rename.renames": "properties.tagline:tagline,properties.title:title,properties.released:released,properties.name:name,properties.born:born,properties.rank:rank",
+    "transforms.extractTopic.skip.missing.or.null": true,
+    "schema.ignore": "true"
+  }
+}

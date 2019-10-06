@@ -1,0 +1,22 @@
+{
+  "name": "neo4j-sink",
+  "config": {
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false,
+    "topics": "movie,person,relationships",
+    "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+    "errors.retry.timeout": "-1",
+    "errors.retry.delay.max.ms": "1000",
+    "errors.tolerance": "all",
+    "errors.log.enable": true,
+    "errors.log.include.messages": true,
+    "neo4j.server.uri": "bolt://neo4j:7687",
+    "neo4j.authentication.basic.username": "neo4j",
+    "neo4j.authentication.basic.password": "connect",
+    "neo4j.encryption.enabled": false,
+    "neo4j.topic.cypher.relationships": "MERGE (p:Person{id: toInteger(event.start.id)}) MERGE (m:Movie{id: toInteger(event.end.id)}) WITH m, p, event CALL apoc.create.relationship(p, event.label, event.properties, m) YIELD rel RETURN p, rel, m",
+    "neo4j.topic.cypher.movie": "MERGE (m:Movie{id: toInteger(event.id)}) SET m.title = event.properties.title",
+    "neo4j.topic.cypher.person": "MERGE (p:Person{id: toInteger(event.id)}) SET p.name = event.properties.name, p.born = event.properties.born"
+  }
+}
